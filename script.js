@@ -434,33 +434,46 @@ function isValidEmail(email) {
  * Soumission du formulaire
  */
 function submitForm(form) {
-    const statusElement = document.getElementById('formStatus');
-    const submitBtn = form.querySelector('button[type="submit"]');
-    
-    // Désactiver le bouton
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
-    
-    // Simulation d'envoi (à remplacer par votre logique réelle)
-    setTimeout(() => {
-        // Succès
-        statusElement.textContent = 'Message envoyé avec succès ! Je vous répondrai bientôt.';
-        statusElement.className = 'form-status success';
-        
-        // Réinitialiser le formulaire
-        form.reset();
-        
-        // Réactiver le bouton
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer le message';
-        
-        // Effacer le message après 5 secondes
-        setTimeout(() => {
-            statusElement.textContent = '';
-            statusElement.className = 'form-status';
-        }, 5000);
-        
-    }, 1500);
+
+const statusElement = document.getElementById('formStatus');
+const submitBtn = form.querySelector('button[type="submit"]');
+
+submitBtn.disabled = true;
+submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+
+emailjs.sendForm(
+'service_m54pp6p',
+'template_wgwubhh',
+form
+)
+
+.then(function() {
+
+statusElement.textContent = 'Message envoyé avec succès ! Je vous répondrai bientôt.';
+statusElement.className = 'form-status success';
+
+form.reset();
+
+submitBtn.disabled = false;
+submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer le message';
+
+setTimeout(() => {
+statusElement.textContent = '';
+statusElement.className = 'form-status';
+}, 5000);
+
+}, function(error) {
+
+statusElement.textContent = "Erreur lors de l'envoi du message.";
+statusElement.className = 'form-status error';
+
+submitBtn.disabled = false;
+submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Envoyer le message';
+
+console.log('EmailJS error:', error);
+
+});
+
 }
 
 /**
@@ -485,3 +498,4 @@ window.portfolioUtils = {
     validateField,
     isValidEmail
 };
+
